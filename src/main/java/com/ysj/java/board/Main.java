@@ -1,5 +1,9 @@
 package com.ysj.java.board;
 
+import com.ysj.java.board.article.Article;
+import com.ysj.java.board.global.Rq;
+import com.ysj.java.board.test.Test;
+
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -8,10 +12,10 @@ public class Main {
   {
     List<Article> testArticleList = new ArrayList<>();
 
-    IntStream.rangeClosed(1, 5).forEach(
+    IntStream.rangeClosed(1, 100).forEach(
         a -> testArticleList.add(new Article("title" + a, "content" + a)));
 
-    System.out.println("test data 5개");
+    System.out.printf("test data %d개\n", testArticleList.size());
 
     return testArticleList;
   }
@@ -27,13 +31,14 @@ public class Main {
     while(true)
     {
       System.out.print("명령) "); input = sc.nextLine();
+      Rq rq = new Rq(input);
 
-      if(input.equals("exit"))
+      if(rq.getUrlPath().equals("exit")) // exit
       {
         System.out.println("실행 종료");
         break;
       }
-      else if(input.equals("/usr/article/write"))
+      else if(rq.getUrlPath().equals("/usr/article/write")) // write
       {
         System.out.println("> 게시물 생성");
         String title; String content;
@@ -57,24 +62,62 @@ public class Main {
 
         System.out.println(article + " 게시물이 생성");
       }
-      else if(input.equals("/usr/article/detail"))
+      else if(rq.getUrlPath().equals("/usr/article/detail")) // detail
       {
-        System.out.println("> 게시물 상세");
-
-        Article lastArticle = articleList.get(articleList.size() - 1);
-
-        if(lastArticle == null)
+        if( !(rq.getParams().containsKey("id")) )
         {
-          System.out.println("게시물이 존재하지 않습니다.");
+          System.out.println("id를 입력해주세요.");
           continue;
         }
 
-        System.out.printf("id: %d\n", lastArticle.id);
-        System.out.printf("title: %s\n", lastArticle.title);
-        System.out.printf("content: %s\n", lastArticle.content);
+        int id;
+        try
+        {
+          id = Integer.parseInt(rq.getParams().get("id"));
+        }
+        catch(NumberFormatException e)
+        {
+          System.out.println("id에 정수를 입력해주세요.");
+          continue;
+        }
+
+        if(id > articleList.size() || id <= 0)
+        {
+          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+          continue;
+        }
+
+        System.out.println("> 게시물 상세");
+
+        Article detailArticle = articleList.get(id - 1);
+
+        System.out.printf("id: %d\n", detailArticle.id);
+        System.out.printf("title: %s\n", detailArticle.title);
+        System.out.printf("content: %s\n", detailArticle.content);
       }
-      else if(input.equals("/usr/article/list"))
+      else if(rq.getUrlPath().equals("/usr/article/list")) // list
       {
+        Map<String, String> params = rq.getParams();
+        String order = "idDesc";
+
+        if(params.containsKey("orderBy"))
+        {
+          order = params.get("orderBy");
+        }
+
+        if( !(order.equals("idAsc") || order.equals("idDesc")) )
+        {
+          System.out.println("잘못된 정렬방식입니다.");
+          continue;
+        }
+
+        String searchKeyword = "";
+
+        if(params.containsKey("searchKeyword"))
+        {
+          searchKeyword = params.get("searchKeyword");
+        }
+
         System.out.println("> 게시물 리스트");
 
         if(articleList.isEmpty())
@@ -83,33 +126,35 @@ public class Main {
           continue;
         }
 
-        System.out.println("최신순: 0\n오래된순: 1");
-        System.out.print("입력: ");
-        input = sc.nextLine();
+        List<Article> filteredList = new ArrayList<>();
 
-        if(input.equals("0"))
-        {
-          System.out.println("최신순\n(id | title)");
+         for(Article article : articleList)
+         {
+           if(article.title.contains(searchKeyword) || article.content.contains(searchKeyword))
+           {
+             filteredList.add(article);
+           }
+         }
 
-          for(int a = articleList.size() - 1; a >= 0; a--)
-          {
-            Article article = articleList.get(a);
-            System.out.printf("%d | %s\n", article.id, article.title);
-          }
-        }
-        else if(input.equals("1"))
+        if(order.equals("idAsc"))
         {
           System.out.println("오래된순\n(id | title)");
 
-          for(Article article : articleList)
+          for(Article article : filteredList)
           {
             System.out.printf("%d | %s\n", article.id, article.title);
           }
-//          articleList.forEach(article -> System.out.printf("%d | %s\n", article.id, article.title));
+//          filteredList.forEach(article -> System.out.printf("%d | %s\n", article.id, article.title));
         }
         else
         {
-          System.out.println("잘못된 입력입니다.");
+          System.out.println("최신순\n(id | title)");
+
+          for(int a = filteredList.size() - 1; a >= 0; a--)
+          {
+            Article article = filteredList.get(a);
+            System.out.printf("%d | %s\n", article.id, article.title);
+          }
         }
       }
       else
@@ -123,60 +168,3 @@ public class Main {
   }
 }
 
-class Article
-{
-  static int lastID = 0;
-  int id;
-  String title;
-  String content;
-
-  Article(String title, String content)
-  {
-    this.id = ++lastID;
-    this.title = title;
-    this.content = content;
-  }
-
-  @Override
-  public String toString()
-  {
-    return "{id: %d, 제목: %s, 내용: %s}".formatted(id, title, content);
-  }
-}
-
-class Test
-{
-  Test()
-  {
-    String URL = "/usr/article/list?page=1&searchKeyword=제목1&searchKeywordTypeCode=subject&boardId=1";
-    Map<String, String> params = Util.getParamsFromURL(URL);
-    System.out.println(params);
-  }
-}
-
-class Util
-{
-  static Map<String, String> getParamsFromURL(String URL)
-  {
-    Map<String, String> params = new LinkedHashMap<>();
-
-    String[] queryString = URL.trim().split("\\?", 2);
-    if(queryString.length == 1)
-    {
-      return params;
-    }
-    String[] queryParts = queryString[1].trim().split("&");
-
-    for(String queryPart : queryParts)
-    {
-      String[] querys = queryPart.trim().split("=", 2);
-      if(querys.length == 1)
-      {
-        continue;
-      }
-      params.put(querys[0], querys[1]);
-    }
-
-    return params;
-  }
-}
