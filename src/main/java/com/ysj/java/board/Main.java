@@ -81,19 +81,36 @@ public class Main {
           continue;
         }
 
-        if(id > articleList.size() || id <= 0)
+        if(articleList.isEmpty())
         {
-          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+          System.out.println("게시물이 존재하지 않습니다.");
           continue;
         }
 
-        System.out.println("> 게시물 상세");
+        int index = -1;
+        for(int a = 0; a < articleList.size(); a++)
+        {
+          if(articleList.get(a).id == id)
+          {
+            index = a;
+            break;
+          }
+        }
 
-        Article detailArticle = articleList.get(id - 1);
+        if(index == -1)
+        {
+          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+        }
+        else
+        {
+          System.out.println("> 게시물 상세");
 
-        System.out.printf("id: %d\n", detailArticle.id);
-        System.out.printf("title: %s\n", detailArticle.title);
-        System.out.printf("content: %s\n", detailArticle.content);
+          Article detailArticle = articleList.get(index);
+
+          System.out.printf("id: %d\n", detailArticle.id);
+          System.out.printf("title: %s\n", detailArticle.title);
+          System.out.printf("content: %s\n", detailArticle.content);
+        }
       }
       else if(rq.getUrlPath().equals("/usr/article/list")) // list
       {
@@ -122,7 +139,7 @@ public class Main {
 
         if(articleList.isEmpty())
         {
-          System.out.println("게시물이 없습니다.");
+          System.out.println("게시물이 존재하지 않습니다.");
           continue;
         }
 
@@ -157,6 +174,120 @@ public class Main {
           }
         }
       }
+      else if(rq.getUrlPath().equals("/usr/article/modify")) // modify
+      {
+        Map<String, String> params = rq.getParams();
+
+        if( !(params.containsKey("id")) )
+        {
+          System.out.println("id를 입력해주세요.");
+          continue;
+        }
+
+        int id;
+        try
+        {
+          id = Integer.parseInt(params.get("id"));
+        }
+        catch(NumberFormatException e)
+        {
+          System.out.println("id에 정수를 입력해주세요.");
+          continue;
+        }
+
+        if(articleList.isEmpty())
+        {
+          System.out.println("게시물이 존재하지 않습니다.");
+          continue;
+        }
+
+        int index = -1;
+        for(int a = 0; a < articleList.size(); a++)
+        {
+          if(articleList.get(a).id == id)
+          {
+            index = a;
+            break;
+          }
+        }
+
+        if(index == -1)
+        {
+          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+        }
+        else
+        {
+          System.out.printf("> %d번 게시물 수정\n", id);
+
+          String title; String content;
+
+          System.out.print("제목: "); title = sc.nextLine();
+          if(title.trim().isEmpty())
+          {
+            System.out.println("제목을 입력해주세요.");
+            continue;
+          }
+
+          System.out.print("내용: "); content = sc.nextLine();
+          if(content.trim().isEmpty())
+          {
+            System.out.println("내용을 입력해주세요.");
+            continue;
+          }
+
+          articleList.get(index).title = title;
+          articleList.get(index).content = content;
+
+          System.out.println(articleList.get(index) + " 게시물이 수정됨");
+        }
+      }
+      else if(rq.getUrlPath().equals("/usr/article/delete")) // delete
+      {
+        Map<String, String> params = rq.getParams();
+
+        if( !(params.containsKey("id")) )
+        {
+          System.out.println("id를 입력해주세요.");
+          continue;
+        }
+
+        int id;
+        try
+        {
+          id = Integer.parseInt(params.get("id"));
+        }
+        catch(NumberFormatException e)
+        {
+          System.out.println("id에 정수를 입력해주세요.");
+          continue;
+        }
+
+        if(articleList.isEmpty())
+        {
+          System.out.println("게시물이 존재하지 않습니다.");
+          continue;
+        }
+
+        int index = -1;
+        for(int a = 0; a < articleList.size(); a++)
+        {
+          if(articleList.get(a).id == id)
+          {
+            index = a;
+            break;
+          }
+        }
+
+        if(index == -1)
+        {
+          System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+        }
+        else
+        {
+          articleList.remove(index);
+          System.out.printf("%d번 게시물이 삭제되었습니다.\n", id);
+        }
+      }
       else
       {
         System.out.println("잘못된 명령어입니다.");
@@ -167,4 +298,3 @@ public class Main {
     System.out.println("--> 자바 게시판 끝 <--");
   }
 }
-
