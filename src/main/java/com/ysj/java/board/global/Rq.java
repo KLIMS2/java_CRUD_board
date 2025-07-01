@@ -6,11 +6,13 @@ public class Rq {
   private String URL;
   private Map<String, String> params;
   private String urlPath;
+  private Session session;
 
   public Rq(String URL) {
     this.URL = URL;
     params = Util.getParamsFromURL(URL);
     urlPath = Util.getUrlPathFromURL(URL);
+    session = Container.session;
   }
 
   public String getUrlPath() {
@@ -69,5 +71,30 @@ public class Rq {
     {
       return null;
     }
+  }
+
+  public void setSessionAttr(String attr, Object object)
+  {
+    session.setAttribute(attr, object);
+  }
+
+  public Object getSessionAttr(String attr)
+  {
+    return session.getAttribute(attr);
+  }
+
+  public void removeSessionAttr(String attr)
+  {
+    session.removeAttribute(attr);
+  }
+
+  public boolean hasSessionAttr(String attr)
+  {
+    return session.hasAttribute(attr);
+  }
+
+  public boolean isLogined()
+  {
+    return session.hasAttribute("logined");
   }
 }

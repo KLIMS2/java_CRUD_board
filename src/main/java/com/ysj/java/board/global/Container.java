@@ -13,6 +13,7 @@ public class Container
 {
   static public Scanner sc;
   static public Rq rq;
+  static public Session session;
 
   static public ArticleRepository articleRepository;
   static public ArticleService articleService;
@@ -26,6 +27,7 @@ public class Container
   {
     sc = new Scanner(System.in);
     rq = null;
+    session = new Session();
 
     articleRepository = new ArticleRepository();
     articleService = new ArticleService();
