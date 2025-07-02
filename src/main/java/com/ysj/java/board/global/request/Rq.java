@@ -1,4 +1,10 @@
-package com.ysj.java.board.global;
+package com.ysj.java.board.global.request;
+
+import com.ysj.java.board.global.session.Session;
+import com.ysj.java.board.global.utility.Util;
+import com.ysj.java.board.global.container.Container;
+import com.ysj.java.board.global.controller.Controller;
+import com.ysj.java.board.section.member.Member;
 
 import java.util.Map;
 
@@ -8,11 +14,20 @@ public class Rq {
   private String urlPath;
   private Session session;
 
-  public Rq(String URL) {
+  public Rq()
+  {
+    session = Container.session;
+  }
+
+  public void setURL(String URL)
+  {
     this.URL = URL;
+  }
+
+  public void run()
+  {
     params = Util.getParamsFromURL(URL);
     urlPath = Util.getUrlPathFromURL(URL);
-    session = Container.session;
   }
 
   public String getUrlPath() {
@@ -96,5 +111,12 @@ public class Rq {
   public boolean isLogined()
   {
     return session.hasAttribute("logined");
+  }
+
+  public Member getLoginedMember()
+  {
+    String id = (String) getSessionAttr("logined");
+    Member loginedMember = Container.memberService.findById(id);
+    return loginedMember;
   }
 }

@@ -1,4 +1,4 @@
-package com.ysj.java.board.article;
+package com.ysj.java.board.section.article;
 
 import lombok.Data;
 
@@ -8,16 +8,24 @@ public class Article {
   private int id;
   private String title;
   private String content;
+  private String writerID;
+  private String writerName;
+  private String writeDate;
+  private String modifyDate;
 
   static
   {
     lastID = 0;
   }
 
-  public Article(String title, String content) {
+  public Article(String title, String content, String writerID, String writerName, String writeDate, String modifyDate) {
     this.id = ++lastID;
     this.title = title;
     this.content = content;
+    this.writerID = writerID;
+    this.writerName = writerName;
+    this.writeDate = writeDate;
+    this.modifyDate = modifyDate;
   }
 
   public static void setLastID(int lastID)

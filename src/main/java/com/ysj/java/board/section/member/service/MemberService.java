@@ -1,8 +1,8 @@
-package com.ysj.java.board.member.service;
+package com.ysj.java.board.section.member.service;
 
-import com.ysj.java.board.global.Container;
-import com.ysj.java.board.member.Member;
-import com.ysj.java.board.member.repository.MemberRepository;
+import com.ysj.java.board.global.container.Container;
+import com.ysj.java.board.section.member.Member;
+import com.ysj.java.board.section.member.repository.MemberRepository;
 
 public class MemberService
 {

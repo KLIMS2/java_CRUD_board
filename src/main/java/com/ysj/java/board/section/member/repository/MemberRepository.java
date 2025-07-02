@@ -1,6 +1,6 @@
-package com.ysj.java.board.member.repository;
+package com.ysj.java.board.section.member.repository;
 
-import com.ysj.java.board.member.Member;
+import com.ysj.java.board.section.member.Member;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +54,9 @@ public class MemberRepository
   public void makeTestData(int num)
   {
     IntStream.rangeClosed(1, num).forEach(
-        a -> memberList.add(new Member("test" + a, "asdf" + a, "usr" + a)));
+        a -> memberList.add(new Member(
+            "test" + a, "asdf" + a, "usr" + a)));
+
+    System.out.printf("member test data %d개\n", memberList.size());
   }
 }

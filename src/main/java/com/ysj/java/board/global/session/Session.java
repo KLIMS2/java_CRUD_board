@@ -1,4 +1,4 @@
-package com.ysj.java.board.global;
+package com.ysj.java.board.global.session;
 
 import java.util.HashMap;
 import java.util.Map;

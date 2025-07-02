@@ -1,4 +1,4 @@
-package com.ysj.java.board.global;
+package com.ysj.java.board.global.controller;
 
 public interface Controller
 {

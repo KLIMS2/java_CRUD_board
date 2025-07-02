@@ -1,10 +1,12 @@
-package com.ysj.java.board.global;
+package com.ysj.java.board.global.utility;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Util {
-  static Map<String, String> getParamsFromURL(String URL) {
+  public static Map<String, String> getParamsFromURL(String URL) {
     Map<String, String> params = new LinkedHashMap<>();
 
     String[] queryString = URL.trim().split("\\?", 2);
@@ -24,8 +26,16 @@ public class Util {
     return params;
   }
 
-  static String getUrlPathFromURL(String URL) {
+  public static String getUrlPathFromURL(String URL) {
     String[] queryString = URL.trim().split("\\?", 2);
     return queryString[0];
+  }
+
+  public static String getNowDateStr()
+  {
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    String date = now.format(formatter);
+    return date;
   }
 }

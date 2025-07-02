@@ -1,4 +1,4 @@
-package com.ysj.java.board.member;
+package com.ysj.java.board.section.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,11 +1,10 @@
-package com.ysj.java.board.member.controller;
+package com.ysj.java.board.section.member.controller;
 
-import com.ysj.java.board.global.Container;
-import com.ysj.java.board.global.Controller;
-import com.ysj.java.board.global.Rq;
-import com.ysj.java.board.global.Session;
-import com.ysj.java.board.member.Member;
-import com.ysj.java.board.member.service.MemberService;
+import com.ysj.java.board.global.container.Container;
+import com.ysj.java.board.global.controller.Controller;
+import com.ysj.java.board.global.request.Rq;
+import com.ysj.java.board.section.member.Member;
+import com.ysj.java.board.section.member.service.MemberService;
 
 import java.util.Scanner;
 
@@ -17,7 +16,7 @@ public class MemberController implements Controller
   {
     memberService = Container.memberService;
 
-    memberService.makeTestData(5); //
+    memberService.makeTestData(100); //
   }
 
   @Override
@@ -53,6 +52,8 @@ public class MemberController implements Controller
 
   public void doJoin(Rq rq, Scanner sc)
   {
+    System.out.println("> 회원가입");
+
     String id; String password; String passwordVerify; String name;
 
     while(true)
@@ -125,6 +126,8 @@ public class MemberController implements Controller
 
   public void doLogin(Rq rq, Scanner sc)
   {
+    System.out.println("> 로그인");
+
     Member loginMember;
     String id; String password;
 
@@ -179,11 +182,21 @@ public class MemberController implements Controller
 
   public void doLogout(Rq rq, Scanner sc)
   {
+    String id = (String) rq.getSessionAttr("logined");
 
+    rq.removeSessionAttr("logined");
+
+    System.out.printf("%s님 로그아웃 되었습니다.\n", id);
   }
 
   public void doMyPage(Rq rq, Scanner sc)
   {
+    Member loginMember = rq.getLoginedMember();
 
+    System.out.println("> 마이페이지");
+
+    System.out.printf("아이디: %s\n", loginMember.getId());
+    System.out.printf("비밀번호: %s\n", loginMember.getPassword());
+    System.out.printf("이름: %s\n", loginMember.getName());
   }
 }

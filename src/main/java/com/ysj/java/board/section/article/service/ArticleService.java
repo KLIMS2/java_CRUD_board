@@ -1,8 +1,8 @@
-package com.ysj.java.board.article.service;
+package com.ysj.java.board.section.article.service;
 
-import com.ysj.java.board.article.Article;
-import com.ysj.java.board.article.repository.ArticleRepository;
-import com.ysj.java.board.global.Container;
+import com.ysj.java.board.section.article.Article;
+import com.ysj.java.board.section.article.repository.ArticleRepository;
+import com.ysj.java.board.global.container.Container;
 
 import java.util.List;
 
@@ -20,9 +20,14 @@ public class ArticleService
     articleRepository.makeTestArticles(num);
   }
 
-  public int findById(int id)
+  public int findIndexById(int id)
   {
-    return articleRepository.findById(id);
+    return articleRepository.findIndexById(id);
+  }
+
+  public Article findArticleById(int id)
+  {
+    return articleRepository.findArticleById(id);
   }
 
   public void addArticle(String title, String content)
@@ -35,9 +40,9 @@ public class ArticleService
     return articleRepository.isArticleEmpty();
   }
 
-  public Article getArticle(int index)
+  public Article getArticle(int id)
   {
-    return articleRepository.get(index);
+    return articleRepository.get(id);
   }
 
   public List<Article> findAll(String searchKeword, String order)
@@ -45,18 +50,13 @@ public class ArticleService
     return articleRepository.filteredArticleList(searchKeword, order);
   }
 
-  public void setArticle(int index, int id, String title, String content)
+  public void setArticle(int id, String title, String content)
   {
-    articleRepository.set(index, id, title, content);
+    articleRepository.set(id, title, content);
   }
 
-  public void removeArticle(int index)
+  public void removeArticle(int id)
   {
-    articleRepository.remove(index);
-  }
-
-  public int getLastId()
-  {
-    return articleRepository.getLastId();
+    articleRepository.remove(id);
   }
 }
