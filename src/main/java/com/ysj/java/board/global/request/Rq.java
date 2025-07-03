@@ -82,6 +82,10 @@ public class Rq {
     {
       return Container.memberController;
     }
+    else if(urlPaths[2].equals("board"))
+    {
+      return Container.boardController;
+    }
     else
     {
       return null;

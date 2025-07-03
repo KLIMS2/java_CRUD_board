@@ -7,6 +7,9 @@ import com.ysj.java.board.global.interceptor.NeedLoginInterceptor;
 import com.ysj.java.board.global.interceptor.NeedLogoutInterceptor;
 import com.ysj.java.board.global.request.Rq;
 import com.ysj.java.board.global.session.Session;
+import com.ysj.java.board.section.board.controller.BoardController;
+import com.ysj.java.board.section.board.repository.BoardRepository;
+import com.ysj.java.board.section.board.service.BoardService;
 import com.ysj.java.board.section.member.controller.MemberController;
 import com.ysj.java.board.section.member.repository.MemberRepository;
 import com.ysj.java.board.section.member.service.MemberService;
@@ -21,6 +24,10 @@ public class Container
 
   static public NeedLoginInterceptor needLoginInterceptor;
   static public NeedLogoutInterceptor needLogoutInterceptor;
+
+  static public BoardRepository boardRepository;
+  static public BoardService boardService;
+  static public BoardController boardController;
 
   static public ArticleRepository articleRepository;
   static public ArticleService articleService;
@@ -38,6 +45,10 @@ public class Container
 
     needLoginInterceptor = new NeedLoginInterceptor();
     needLogoutInterceptor = new NeedLogoutInterceptor();
+
+    boardRepository = new BoardRepository();
+    boardService = new BoardService();
+    boardController = new BoardController();
 
     articleRepository = new ArticleRepository();
     articleService = new ArticleService();

@@ -198,5 +198,6 @@ public class MemberController implements Controller
     System.out.printf("아이디: %s\n", loginMember.getId());
     System.out.printf("비밀번호: %s\n", loginMember.getPassword());
     System.out.printf("이름: %s\n", loginMember.getName());
+    System.out.printf("계정 권한: %s\n", loginMember.getMemberLevel());
   }
 }

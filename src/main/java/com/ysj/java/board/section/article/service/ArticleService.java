@@ -30,9 +30,9 @@ public class ArticleService
     return articleRepository.findArticleById(id);
   }
 
-  public void addArticle(String title, String content)
+  public void addArticle(String title, String content, int boardId, String boardName)
   {
-    articleRepository.add(title, content);
+    articleRepository.add(title, content, boardId, boardName);
   }
 
   public boolean isArticleEmpty()

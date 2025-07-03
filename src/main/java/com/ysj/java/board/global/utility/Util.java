@@ -38,4 +38,25 @@ public class Util {
     String date = now.format(formatter);
     return date;
   }
+
+  public static int mapping(int start, int end, int n, int num)
+  {
+    int rs = -1;
+    int interval = (end - start + 1) / n;
+
+    if(interval * n < num)
+    {
+      rs = n;
+    }
+
+    for(int a = 1; a <= n; a++)
+    {
+      if(start + interval * (a - 1) <= num && num <= interval * a)
+      {
+        rs = a;
+      }
+    }
+
+    return rs;
+  }
 }

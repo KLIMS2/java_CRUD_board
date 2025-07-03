@@ -17,7 +17,7 @@ public class MemberRepository
 
   public void join(String id, String password, String name)
   {
-    Member newMember = new Member(id, password, name);
+    Member newMember = new Member(id, password, name, "normal");
     memberList.add(newMember);
   }
 
@@ -53,9 +53,11 @@ public class MemberRepository
 
   public void makeTestData(int num)
   {
+    memberList.add(new Member("admin", "admin", "admin", "admin"));
+
     IntStream.rangeClosed(1, num).forEach(
         a -> memberList.add(new Member(
-            "test" + a, "asdf" + a, "usr" + a)));
+            "test" + a, "asdf" + a, "usr" + a, "normal")));
 
     System.out.printf("member test data %d개\n", memberList.size());
   }

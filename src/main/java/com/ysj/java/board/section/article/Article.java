@@ -12,13 +12,16 @@ public class Article {
   private String writerName;
   private String writeDate;
   private String modifyDate;
+  private int boardID;
+  private String boardName;
 
   static
   {
     lastID = 0;
   }
 
-  public Article(String title, String content, String writerID, String writerName, String writeDate, String modifyDate) {
+  public Article(String title, String content, String writerID, String writerName,
+                 String writeDate, String modifyDate, int boardID, String boardName) {
     this.id = ++lastID;
     this.title = title;
     this.content = content;
@@ -26,6 +29,8 @@ public class Article {
     this.writerName = writerName;
     this.writeDate = writeDate;
     this.modifyDate = modifyDate;
+    this.boardID = boardID;
+    this.boardName = boardName;
   }
 
   public static void setLastID(int lastID)

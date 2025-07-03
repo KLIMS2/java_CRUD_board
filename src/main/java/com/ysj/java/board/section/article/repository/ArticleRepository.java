@@ -20,29 +20,32 @@ public class ArticleRepository
 
   public void makeTestArticles(int num)
   {
-    IntStream.rangeClosed(1, 100).forEach(
+    IntStream.rangeClosed(1, num).forEach(
         a -> {
           String writeDate = Util.getNowDateStr();
           String modifyDate = writeDate;
+          int boardID = Util.mapping(1, num, 3, a);
+
           articleList.add(new Article(
               "title" + a,
               "content" + a,
               "test" + a,
               "usr" + a,
-              writeDate, modifyDate));
+              writeDate, modifyDate, boardID, "board" + boardID));
         });
 
     System.out.printf("article test data %d개\n", articleList.size());
   }
 
-  public void add(String title, String content)
+  public void add(String title, String content, int boardId, String boardName)
   {
     String writerID = Container.rq.getLoginedMember().getId();
     String writerName = Container.rq.getLoginedMember().getName();
     String writeDate = Util.getNowDateStr();
     String modifyDate = writeDate;
 
-    Article newArticle = new Article(title, content, writerID, writerName, writeDate, modifyDate);
+    Article newArticle = new Article(title, content, writerID, writerName,
+        writeDate, modifyDate, boardId, boardName);
     articleList.add(newArticle);
   }
 
@@ -67,47 +70,36 @@ public class ArticleRepository
       return;
     }
 
+    Article findArticle = findArticleById(id);
     String writerID = Container.rq.getLoginedMember().getId();
     String writerName = Container.rq.getLoginedMember().getName();
-    String writeDate = findArticleById(id).getWriteDate();
+    String writeDate = findArticle.getWriteDate();
     String modifyDate = Util.getNowDateStr();
+    int boardID = findArticle.getBoardID();
+    String boardName = findArticle.getBoardName();
 
-    Article article = new Article(title, content, writerID, writerName, writeDate, modifyDate);
+
+    Article article = new Article(title, content, writerID, writerName,
+        writeDate, modifyDate, boardID, boardName);
     article.setId(id); Article.setLastID(Article.getLastID() - 1);
     articleList.set(index, article);
   }
 
   public void remove(int id)
   {
-    int index = findIndexById(id);
+    Article findArticle = findArticleById(id);
 
-    if(articleList.isEmpty() || index >= articleList.size() || index < 0)
+    if(articleList.isEmpty() || findArticle == null)
     {
       return;
     }
 
-    articleList.remove(index);
+    articleList.remove(findArticle);
   }
 
   public boolean isArticleEmpty()
   {
     return articleList.isEmpty();
-  }
-
-  public Article findArticleById(int id)
-  {
-    Article article = null;
-
-    for(int a = 0; a < articleList.size(); a++)
-    {
-      if(articleList.get(a).getId() == id)
-      {
-        article = articleList.get(a);
-        break;
-      }
-    }
-
-    return article;
   }
 
   public int findIndexById(int id)
@@ -124,6 +116,18 @@ public class ArticleRepository
     }
 
     return index;
+  }
+
+  public Article findArticleById(int id)
+  {
+    int index = findIndexById(id);
+
+    if(index == -1)
+    {
+      return null;
+    }
+
+    return articleList.get(index);
   }
 
   public List<Article> filteredArticleList(String searchKeyword, String order)

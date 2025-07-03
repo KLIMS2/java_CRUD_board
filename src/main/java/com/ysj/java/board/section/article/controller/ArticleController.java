@@ -5,6 +5,8 @@ import com.ysj.java.board.section.article.service.ArticleService;
 import com.ysj.java.board.global.container.Container;
 import com.ysj.java.board.global.controller.Controller;
 import com.ysj.java.board.global.request.Rq;
+import com.ysj.java.board.section.board.Board;
+import com.ysj.java.board.section.board.service.BoardService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -12,10 +14,13 @@ import java.util.Scanner;
 public class ArticleController implements Controller
 {
   private ArticleService articleService;
+  private BoardService boardService;
 
   public ArticleController()
   {
     articleService = Container.articleService;
+    boardService = Container.boardService;
+
     articleService.makeTestArticles(100); //
   }
 
@@ -56,7 +61,25 @@ public class ArticleController implements Controller
 
   public void doWrite(Rq rq, Scanner sc)
   {
-    System.out.println("> 게시물 생성");
+    final int DEFAULT = -1;
+    int boardID = rq.getIntParam("boardId", DEFAULT);
+
+    if(boardID == DEFAULT)
+    {
+      System.out.println("boardId를 정수로 입력해 주세요.");
+      return;
+    }
+
+    Board board = boardService.findById(boardID);
+
+    if(board == null)
+    {
+      System.out.println("존재하지 않는 게시판입니다.");
+      return;
+    }
+
+    System.out.printf("> 게시물 생성 (%s 게시판)\n", board.getName());
+
     String title; String content;
 
     while(true)
@@ -87,9 +110,9 @@ public class ArticleController implements Controller
       }
     }
 
-    articleService.addArticle(title, content);
+    articleService.addArticle(title, content, board.getId(), board.getName());
 
-    System.out.println(Article.getLastID() + "번 게시물이 생성됨");
+    System.out.printf("%d번 게시물이 생성됨\n", Article.getLastID());
   }
 
   public void doDetail(Rq rq, Scanner sc)
@@ -117,13 +140,13 @@ public class ArticleController implements Controller
       return;
     }
 
-    System.out.println("> 게시물 상세");
-
     Article detailArticle = articleService.getArticle(id);
+
+    System.out.printf("> 게시물 상세 (%s 게시판)\n", detailArticle.getBoardName());
 
     System.out.printf("id: %d\n", detailArticle.getId());
     System.out.printf("title: %s\n", detailArticle.getTitle());
-    System.out.printf("writer: %s(%s)\n", detailArticle.getWriterID(), detailArticle.getWriterName());
+    System.out.printf("writer: %s (%s)\n", detailArticle.getWriterID(), detailArticle.getWriterName());
     System.out.printf("write date: %s\n", detailArticle.getWriteDate());
     System.out.printf("modify date: %s\n", detailArticle.getModifyDate());
     System.out.printf("content: %s\n", detailArticle.getContent());
@@ -150,9 +173,10 @@ public class ArticleController implements Controller
 
     System.out.printf("> 게시물 리스트 (총 %d개)\n", articles.size());
 
-    System.out.println("(id | title | writer)");
+    System.out.println("(id | title | writer | board)");
     articles.forEach(article ->
-        System.out.printf("%d: %s (%s)\n", article.getId(), article.getTitle(), article.getWriterID()));
+        System.out.printf("%d: %s (%s) {%s}\n",
+            article.getId(), article.getTitle(), article.getWriterID(), article.getBoardName()));
   }
 
   public void doModify(Rq rq, Scanner sc)
